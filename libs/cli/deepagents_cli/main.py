@@ -634,6 +634,10 @@ async def run_textual_cli_async(
                 console.print(Text(str(e), style="dim"))
                 sys.exit(1)
 
+        from deepagents_cli.agent import load_async_subagents
+
+        async_subagents = load_async_subagents() or None
+
         try:
             agent, composite_backend = create_cli_agent(
                 model=model,
@@ -645,6 +649,7 @@ async def run_textual_cli_async(
                 enable_ask_user=enable_ask_user,
                 checkpointer=checkpointer,
                 mcp_server_info=mcp_server_info,
+                async_subagents=async_subagents,
             )
         except Exception as e:  # broad catch for friendly CLI errors
             logger.debug("Failed to create agent", exc_info=True)
@@ -768,12 +773,17 @@ async def _run_acp_cli_async(
         sys.stderr.flush()
         return 1
 
+    from deepagents_cli.agent import load_async_subagents
+
+    async_subagents = load_async_subagents() or None
+
     try:
         agent_graph, _backend = create_cli_agent(
             model=model_result.model,
             assistant_id=assistant_id,
             tools=tools,
             mcp_server_info=mcp_server_info,
+            async_subagents=async_subagents,
         )
     except Exception as exc:
         sys.stderr.write(f"Error: failed to create agent: {exc}\n")

@@ -3223,6 +3223,8 @@ class DeepAgentsApp(App):
         prev_context_limit = settings.model_context_limit
         result.apply_to_settings()
 
+        from deepagents_cli.agent import load_async_subagents
+
         try:
             new_agent, new_backend = create_cli_agent(
                 model=result.model,
@@ -3234,6 +3236,7 @@ class DeepAgentsApp(App):
                 enable_ask_user=self._enable_ask_user,
                 checkpointer=self._checkpointer,
                 mcp_server_info=self._mcp_server_info,
+                async_subagents=load_async_subagents() or None,
             )
         except Exception as e:
             # Roll back settings so the running agent isn't misrepresented.
